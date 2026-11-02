@@ -26,7 +26,7 @@ trap 'error_m interrupted!' SIGINT
 
 ### CONSTANTS ###
 readonly script_path="$(cd "$(dirname "$0")";pwd -P)"
-readonly vars_path="${script_path}/../../../vendor/lineage/vars"
+readonly vars_path="${script_path}/../../../vendor/alch3my/vars"
 readonly top="${script_path}/../../.."
 
 source "${vars_path}/pixels"
@@ -64,13 +64,13 @@ main() {
     (
       local dv="${vars_path}/${d}"
       source "${dv}"
-      local mk="$(ls ${top}/device/google/*/lineage_${d}.mk)"
+      local mk="$(ls ${top}/device/google/*/alch3my_${d}.mk)"
       desc="${d}-user ${android_version} ${build_id} ${build_number} release-keys"
       systemdesc="generic_system_google-user ${android_version} ${build_id} ${build_number} release-keys"
       fingerprint="google/${d}/${d}:${android_version}/${build_id}/${build_number}:user/release-keys"
       systemfingerprint="google/generic_system_google/generic:${android_version}/${build_id}/${build_number}:user/release-keys"
       sed -i "/BuildDesc/c\    BuildDesc=\"${desc}\" \\\\" "${mk}"
-      sed -i "/BuildSystemDesc/c\    BuildSystemDesc=\"${systemdesc}\" \\\\" "${mk}"
+      sed -i "/BuildSystemDesc/c\    BuildSystemDesc=${systemdesc} \\\\" "${mk}"
       sed -i "/BuildFingerprint/c\    BuildFingerprint=${fingerprint} \\\\" "${mk}"
       sed -i "/BuildSystemFingerprint/c\    BuildSystemFingerprint=${systemfingerprint} \\\\" "${mk}"
     )
@@ -81,7 +81,7 @@ main() {
     (
       local dv="${vars_path}/${d}"
       source "${dv}"
-      local dir="$(ls ${top}/device/google/*/lineage_${d}.mk | sed s#/lineage_${d}.mk##)"
+      local dir="$(ls ${top}/device/google/*/alch3my_${d}.mk | sed s#/alch3my_${d}.mk##)"
       cd "${dir}"
       if [[ -n "$(git status --porcelain)" ]]; then
         git commit -a -m "Update fingerprint/build description from ${build_id}"
